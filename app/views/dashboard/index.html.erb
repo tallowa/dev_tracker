@@ -3,13 +3,26 @@
   
   <% if @active_time_entry %>
     <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
-      <strong>Timer Running:</strong> <%= @active_time_entry.description %>
-      <br>
-      <small>Started: <%= @active_time_entry.start_time.strftime("%I:%M %p") %></small>
+      <div class="flex justify-between items-center">
+        <div>
+          <strong>Timer Running:</strong> <%= @active_time_entry.description %>
+          <br>
+          <small>
+            Project: <%= link_to @active_time_entry.project.name, [@active_time_entry.project.organization, @active_time_entry.project], class: "underline" %> • 
+            Started: <%= @active_time_entry.start_time.strftime("%I:%M %p") %>
+          </small>
+        </div>
+        <div>
+          <%= link_to "Stop Timer", stop_time_entry_path(@active_time_entry), 
+                      method: :patch, 
+                      class: "bg-red-500 text-white px-3 py-1 rounded text-sm hover:bg-red-600" %>
+        </div>
+      </div>
     </div>
   <% end %>
 </div>
 
+<!-- Rest of dashboard remains the same -->
 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
   <!-- Organizations -->
   <div class="bg-white rounded-lg shadow p-6">

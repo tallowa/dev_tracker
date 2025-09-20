@@ -1,4 +1,71 @@
-<div>
-  <h1 class="font-bold text-4xl">Organizations#show</h1>
-  <p>Find me in app/views/organizations/show.html.erb</p>
+<div class="bg-white rounded-lg shadow p-6 mb-6">
+  <div class="flex justify-between items-center mb-4">
+    <h1 class="text-2xl font-bold"><%= @organization.name %></h1>
+    <%= link_to "New Project", new_organization_project_path(@organization), class: "bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600" %>
+  </div>
+  
+  <p class="text-gray-600">
+    <%= pluralize(@organization.users.count, 'member') %> • 
+    <%= pluralize(@projects.count, 'project') %>
+  </p>
+</div>
+
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+  <!-- Projects -->
+  <div class="bg-white rounded-lg shadow p-6">
+    <h2 class="text-xl font-semibold mb-4">Projects</h2>
+    
+    <% if @projects.any? %>
+      <% @projects.each do |project| %>
+        <div class="border-b py-3 last:border-b-0">
+          <div class="flex justify-between items-start">
+            <div>
+              <h3 class="font-medium"><%= project.name %></h3>
+              <% if project.description.present? %>
+                <p class="text-sm text-gray-600 mt-1"><%= project.description %></p>
+              <% end %>
+              <p class="text-xs text-gray-500 mt-1">
+                <%= pluralize(project.time_entries.count, 'time entry') %>
+              </p>
+            </div>
+            <div class="flex space-x-2">
+              <%= link_to "View", [@organization, project], class: "text-blue-600 hover:underline text-sm" %>
+              <%= link_to "Edit", edit_organization_project_path(@organization, project), class: "text-gray-600 hover:underline text-sm" %>
+            </div>
+          </div>
+        </div>
+      <% end %>
+    <% else %>
+      <p class="text-gray-500">No projects yet. Create one to start tracking time!</p>
+    <% end %>
+  </div>
+
+  <!-- Recent Activity -->
+  <div class="bg-white rounded-lg shadow p-6">
+    <h2 class="text-xl font-semibold mb-4">Recent Activity</h2>
+    
+    <% if @recent_time_entries.any? %>
+      <% @recent_time_entries.each do |entry| %>
+        <div class="border-b py-2 last:border-b-0">
+          <div class="text-sm">
+            <strong><%= entry.user.full_name %></strong> worked on 
+            <strong><%= entry.project.name %></strong>
+          </div>
+          <div class="text-xs text-gray-600">
+            <%= entry.description %> • 
+            <% if entry.end_time %>
+              <%= entry.duration_in_hours.round(2) %> hours
+            <% else %>
+              <span class="text-green-600">In Progress</span>
+            <% end %>
+          </div>
+          <div class="text-xs text-gray-500">
+            <%= time_ago_in_words(entry.created_at) %> ago
+          </div>
+        </div>
+      <% end %>
+    <% else %>
+      <p class="text-gray-500">No time entries yet.</p>
+    <% end %>
+  </div>
 </div>
